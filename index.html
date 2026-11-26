@@ -682,7 +682,6 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
 
     if (activePlay) await closePlayer();
     currentGame = game;
-    $("playingName").textContent = game.name;
     $("playerOverlay").classList.add("open");
     $("playerOverlay").setAttribute("aria-hidden", "false");
     $("playerLoading").style.display = "flex";
