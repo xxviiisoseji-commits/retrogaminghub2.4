@@ -361,17 +361,34 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
   </dialog>
 
   <script>
-// Track emulator WebAudio contexts so the mute control affects audio output only.
+// Route emulator audio through a master GainNode. Muting changes output volume
+// only; AudioContexts remain running so emulator timing and callbacks continue.
+window.__rghMuted = false;
 window.__rghAudioContexts = window.__rghAudioContexts || [];
 for (const key of ["AudioContext", "webkitAudioContext"]) {
   const Original = window[key];
   if (Original && !Original.__rghTracked) {
-    const Tracked = new Proxy(Original, { construct(target, args) {
-      const context = Reflect.construct(target, args, target);
-      window.__rghAudioContexts.push(context);
-      if (window.__rghMuted) context.suspend().catch(() => {});
-      return context;
-    }});
+    const Tracked = new Proxy(Original, {
+      construct(target, args) {
+        const context = Reflect.construct(target, args, target);
+        try {
+          const originalDestination = context.destination;
+          const outputGain = context.createGain();
+          outputGain.gain.value = window.__rghMuted ? 0 : 1;
+          outputGain.connect(originalDestination);
+          Object.defineProperty(context, "destination", {
+            configurable: true,
+            get: () => outputGain
+          });
+          context.__rghOutputGain = outputGain;
+          window.__rghAudioContexts.push(context);
+        } catch (error) {
+          // Never interrupt emulation if a browser blocks audio routing changes.
+          console.warn("Retro Gaming Hub: audio mute routing unavailable.", error);
+        }
+        return context;
+      }
+    });
     Tracked.__rghTracked = true;
     window[key] = Tracked;
   }
@@ -909,10 +926,22 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     $("controlModeSelect").addEventListener("change", () => {
       $("controlToggleButton").textContent = $("controlModeSelect").value === "joystick" ? "Joystick" : "D-pad";
     });
-    $("muteButton").addEventListener("click", async () => {
+    $("muteButton").addEventListener("click", () => {
       window.__rghMuted = !window.__rghMuted;
-      const contexts = window.__rghAudioContexts || [];
-      await Promise.all(contexts.map(ctx => window.__rghMuted ? ctx.suspend().catch(() => {}) : ctx.resume().catch(() => {})));
+      const targetGain = window.__rghMuted ? 0 : 1;
+      for (const context of (window.__rghAudioContexts || [])) {
+        const gain = context.__rghOutputGain;
+        if (!gain) continue;
+        try {
+          if (gain.gain.setTargetAtTime) {
+            gain.gain.setTargetAtTime(targetGain, context.currentTime, 0.015);
+          } else {
+            gain.gain.value = targetGain;
+          }
+        } catch (error) {
+          console.warn("Retro Gaming Hub: could not update audio volume.", error);
+        }
+      }
       $("muteButton").textContent = window.__rghMuted ? "🔇" : "🔊";
       $("muteButton").setAttribute("aria-pressed", String(window.__rghMuted));
       $("muteButton").setAttribute("aria-label", window.__rghMuted ? "Unmute audio" : "Mute audio");
