@@ -795,6 +795,150 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
   }
 }
 
+
+
+/* Landscape-only layout correction for the rotated mobile player.
+   CSS-only: emulator, canvas sizing/logic, key bindings and game behavior unchanged. */
+@media (max-width: 760px) and (orientation: portrait) {
+  .player-overlay.manual-landscape {
+    overflow: hidden;
+    height: 100dvh;
+    min-height: 100dvh;
+  }
+
+  .player-overlay.manual-landscape .player-stage {
+    position: absolute;
+    left: calc(100vw - 44px);
+    top: 0;
+    width: calc(100dvh - 44px - var(--safe-top) - var(--safe-bottom));
+    height: calc(100vw - 44px - var(--safe-left) - var(--safe-right));
+    box-sizing: border-box;
+    padding: 8px 10px 8px max(36px, var(--safe-top));
+    display: grid;
+    grid-template-columns: minmax(142px, .82fr) minmax(0, 3fr) minmax(142px, .82fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 8px;
+    row-gap: 4px;
+    align-items: center;
+    justify-items: center;
+    min-height: 0;
+    overflow: hidden;
+    transform: rotate(90deg);
+    transform-origin: top left;
+  }
+
+  .player-overlay.manual-landscape .player-frame-wrap {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, calc((100vw - 68px) * 1.5));
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100vw - 68px);
+    min-width: 0;
+    aspect-ratio: 3 / 2;
+    align-self: center;
+    justify-self: center;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    box-shadow: none;
+    background: #000;
+    overflow: hidden;
+  }
+
+  .player-overlay.manual-landscape .mobile-touch-controls {
+    display: contents;
+  }
+
+  .player-overlay.manual-landscape .virtual-stick,
+  .player-overlay.manual-landscape .touch-dpad {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+  }
+
+  .player-overlay.manual-landscape .touch-dpad {
+    width: auto;
+    grid-template-columns: repeat(3, clamp(48px, 9.2vw, 66px));
+    grid-template-rows: repeat(3, clamp(48px, 9.2vw, 66px));
+    gap: 3px;
+  }
+
+  .player-overlay.manual-landscape .touch-dpad .touch-key {
+    font-size: clamp(20px, 4.5vw, 25px);
+    border-radius: 9px;
+  }
+
+  .player-overlay.manual-landscape .touch-actions {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    display: flex;
+    gap: clamp(8px, 2vw, 16px);
+    transform: rotate(-12deg);
+    writing-mode: horizontal-tb;
+    white-space: normal;
+  }
+
+  .player-overlay.manual-landscape .touch-actions .touch-key {
+    width: clamp(54px, 11vw, 76px);
+    height: clamp(54px, 11vw, 76px);
+    font-size: 20px;
+  }
+
+  .player-overlay.manual-landscape .touch-shoulders {
+    grid-column: 1 / 4;
+    grid-row: 1;
+    position: absolute;
+    top: 4px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .player-overlay.manual-landscape .touch-shoulders .touch-key {
+    width: 48px;
+    height: 28px;
+    min-height: 28px;
+    pointer-events: auto;
+  }
+
+  .player-overlay.manual-landscape .touch-start-select {
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    align-self: center;
+    gap: 12px;
+    margin: 0;
+    transform: none;
+  }
+
+  .player-overlay.manual-landscape .touch-start-select .small-key {
+    min-width: 76px;
+    min-height: 30px;
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+
+  .player-overlay.manual-landscape .player-topbar {
+    box-sizing: border-box;
+    padding-left: max(36px, var(--safe-top));
+    padding-right: max(8px, var(--safe-right));
+  }
+
+  .player-overlay.manual-landscape .player-hint,
+  .player-overlay.manual-landscape .player-error {
+    display: none;
+  }
+}
+
 </style>
 </head>
 <body>
