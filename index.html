@@ -695,6 +695,106 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
   }
 }
 
+
+/* Landscape-only refinement: reserve the phone status/notch edge, enlarge the
+   game viewport itself, reclaim unused control-row space, and slightly enlarge
+   the D-pad. Portrait player styling is intentionally untouched. */
+@media (max-width: 760px) and (orientation: portrait) {
+  .player-overlay.manual-landscape .player-stage {
+    box-sizing: border-box;
+    /* After the 90deg rotation, logical left padding becomes the phone's
+       physical top edge where Android's clock/status indicators sit. */
+    padding: 8px 8px 8px max(30px, var(--safe-top));
+    grid-template-columns: minmax(108px, .78fr) minmax(0, 3fr) minmax(108px, .78fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: 7px;
+    row-gap: 2px;
+  }
+  .player-overlay.manual-landscape .player-topbar {
+    box-sizing: border-box;
+    /* Keep toolbar controls clear of the physical status/notch edge too. */
+    padding: 3px 7px 3px max(30px, var(--safe-top));
+  }
+  .player-overlay.manual-landscape .player-frame-wrap {
+    width: min(100%, calc((100vw - 52px) * 1.5));
+    max-height: calc(100vw - 52px);
+    min-width: 0;
+    justify-self: stretch;
+    align-self: center;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+  .player-overlay.manual-landscape #emulatorMount {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .player-overlay.manual-landscape #emulatorMount > *,
+  .player-overlay.manual-landscape #emulatorMount canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  .player-overlay.manual-landscape #emulatorMount canvas {
+    display: block;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .player-overlay.manual-landscape .touch-dpad {
+    grid-template-columns: repeat(3, clamp(42px, 9.2vw, 64px));
+    grid-template-rows: repeat(3, clamp(42px, 9.2vw, 64px));
+    gap: 3px;
+  }
+  .player-overlay.manual-landscape .touch-dpad .touch-key {
+    font-size: clamp(19px, 4.5vw, 23px);
+  }
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .player-overlay.open .player-stage {
+    box-sizing: border-box;
+    padding-top: max(28px, var(--safe-top));
+    padding-left: max(8px, var(--safe-left));
+    padding-right: max(8px, var(--safe-right));
+    grid-template-columns: minmax(122px, .78fr) minmax(0, 3fr) minmax(122px, .78fr);
+    column-gap: 7px;
+    row-gap: 2px;
+  }
+  .player-overlay.open .player-topbar {
+    box-sizing: border-box;
+    padding-top: max(28px, var(--safe-top));
+    padding-right: max(3px, var(--safe-right));
+  }
+  .player-overlay.open .player-frame-wrap {
+    width: min(100%, calc((100dvh - 54px) * 1.5));
+    max-height: calc(100dvh - 54px);
+  }
+  .player-overlay.open #emulatorMount > *,
+  .player-overlay.open #emulatorMount canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+  }
+  .player-overlay.open #emulatorMount canvas {
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .player-overlay.open .touch-dpad {
+    grid-template-columns: repeat(3, clamp(52px, 13vh, 76px));
+    grid-template-rows: repeat(3, clamp(52px, 13vh, 76px));
+  }
+  .player-overlay.open .touch-dpad .touch-key {
+    font-size: clamp(21px, 5.2vh, 29px);
+  }
+}
+
 </style>
 </head>
 <body>
