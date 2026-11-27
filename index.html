@@ -340,6 +340,361 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
   }
 }
 
+
+/* Landscape player layout: use the whole viewport for the GBA display and touch controls. */
+@media (max-width: 900px) and (orientation: landscape) {
+  .player-overlay.open {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .player-overlay .player-topbar {
+    position: absolute;
+    z-index: 6;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 46px;
+    height: 100%;
+    min-height: 0;
+    padding: max(5px, var(--safe-top)) 3px max(5px, var(--safe-bottom));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 5px;
+    border: 0;
+    border-left: 1px solid var(--line);
+    background: #090b12ed;
+    backdrop-filter: blur(14px);
+  }
+  .player-overlay .player-topbar .player-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    max-width: none;
+    overflow: visible;
+  }
+  .player-overlay .player-topbar .player-action {
+    width: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    height: auto;
+    padding: 5px 3px;
+    display: grid;
+    place-items: center;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    font-size: 9px;
+    line-height: 1.1;
+    border-radius: 7px;
+  }
+  .player-overlay .player-topbar #playerSettingsButton { min-height: 62px; }
+  .player-overlay .player-topbar .close-player {
+    min-height: 35px;
+    font-size: 17px;
+    writing-mode: horizontal-tb;
+    transform: none;
+  }
+  .player-overlay .player-stage {
+    position: absolute;
+    inset: 0 46px 0 0;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    padding: max(5px, var(--safe-top)) 8px max(5px, var(--safe-bottom));
+    display: grid;
+    grid-template-columns: minmax(132px, .9fr) minmax(0, 2.5fr) minmax(132px, .9fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    align-items: center;
+    justify-items: center;
+    gap: 3px 10px;
+    overflow: hidden;
+  }
+  .player-overlay .player-frame-wrap {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, calc((100dvh - 66px) * 1.5));
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100dvh - 66px);
+    aspect-ratio: 3 / 2;
+    align-self: center;
+    justify-self: center;
+    border: 0;
+    border-radius: 0;
+    outline: 0;
+    box-shadow: none;
+    background: #000;
+    overflow: hidden;
+  }
+  #emulatorMount {
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+  #emulatorMount canvas {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    image-rendering: pixelated;
+  }
+  .player-overlay .mobile-touch-controls { display: contents; }
+  .player-overlay .virtual-stick,
+  .player-overlay .touch-dpad {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+  }
+  .player-overlay .virtual-stick {
+    width: clamp(138px, 25vh, 198px);
+    max-width: 100%;
+  }
+  .player-overlay .touch-dpad {
+    width: auto;
+    grid-template-columns: repeat(3, clamp(48px, 12vh, 70px));
+    grid-template-rows: repeat(3, clamp(48px, 12vh, 70px));
+    gap: 3px;
+  }
+  .player-overlay .touch-dpad .touch-key {
+    border-radius: 10px;
+    font-size: clamp(20px, 5vh, 27px);
+  }
+  .player-overlay .touch-actions {
+    grid-column: 3;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    gap: clamp(8px, 2.5vh, 18px);
+    transform: rotate(-10deg);
+  }
+  .player-overlay .touch-actions .touch-key {
+    width: clamp(62px, 16vh, 88px);
+    height: clamp(62px, 16vh, 88px);
+    font-size: clamp(21px, 5vh, 27px);
+  }
+  .player-overlay .touch-actions .b-key { transform: translateY(11px); }
+  .player-overlay .touch-actions .a-key { transform: translateY(-8px); }
+  .player-overlay .touch-shoulders {
+    grid-column: 1 / 4;
+    grid-row: 1;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    right: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-self: start;
+    pointer-events: none;
+  }
+  .player-overlay .touch-shoulders .touch-key {
+    width: 48px;
+    height: 27px;
+    min-height: 27px;
+    border-radius: 8px;
+    font-size: 11px;
+    pointer-events: auto;
+  }
+  .player-overlay .touch-start-select {
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    align-self: center;
+    gap: 14px;
+    transform: none;
+    margin: 0 0 2px;
+  }
+  .player-overlay .touch-start-select .small-key {
+    min-width: 82px;
+    min-height: 30px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 10px;
+    letter-spacing: .1em;
+  }
+  .player-overlay .player-hint { display: none; }
+  .player-overlay .player-error {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 2px;
+    z-index: 5;
+    font-size: 9px;
+    pointer-events: none;
+  }
+}
+
+/* When landscape is simulated while the device remains portrait, rotate the settings rail too. */
+@media (max-width: 760px) and (orientation: portrait) {
+  .player-overlay.manual-landscape {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .player-overlay.manual-landscape .player-topbar {
+    position: absolute;
+    z-index: 7;
+    top: 0;
+    left: 100vw;
+    right: auto;
+    bottom: auto;
+    width: calc(100dvh - var(--safe-top) - var(--safe-bottom));
+    height: 44px;
+    min-height: 0;
+    padding: 3px 7px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 4px;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    background: #090b12ed;
+  }
+  .player-overlay.manual-landscape .player-topbar .player-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 4px;
+    max-width: none;
+    overflow: visible;
+  }
+  .player-overlay.manual-landscape .player-topbar .player-action {
+    width: auto;
+    min-width: 32px;
+    min-height: 32px;
+    height: 32px;
+    padding: 4px 6px;
+    writing-mode: horizontal-tb;
+    transform: none;
+    font-size: 9px;
+  }
+  .player-overlay.manual-landscape .player-topbar .close-player {
+    min-height: 32px;
+    height: 32px;
+  }
+  .player-overlay.manual-landscape .player-stage {
+    position: absolute;
+    left: calc(100vw - 44px);
+    top: 0;
+    width: calc(100dvh - 44px - var(--safe-top) - var(--safe-bottom));
+    height: calc(100vw - 44px - var(--safe-left) - var(--safe-right));
+    padding: 6px;
+    display: grid;
+    grid-template-columns: minmax(118px, .9fr) minmax(0, 2.5fr) minmax(118px, .9fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    gap: 3px 8px;
+    align-items: center;
+    justify-items: center;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    overflow: hidden;
+  }
+  .player-overlay.manual-landscape .player-frame-wrap {
+    grid-column: 2;
+    grid-row: 1;
+    width: min(100%, calc((100vw - 68px) * 1.5));
+    height: auto;
+    max-width: 100%;
+    max-height: calc(100vw - 68px);
+    aspect-ratio: 3 / 2;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: #000;
+  }
+  .player-overlay.manual-landscape .mobile-touch-controls { display: contents; }
+  .player-overlay.manual-landscape .virtual-stick,
+  .player-overlay.manual-landscape .touch-dpad {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: center;
+    align-self: center;
+  }
+  .player-overlay.manual-landscape .virtual-stick { width: clamp(116px, 22vw, 170px); }
+  .player-overlay.manual-landscape .touch-dpad {
+    width: auto;
+    grid-template-columns: repeat(3, clamp(38px, 8.5vw, 58px));
+    grid-template-rows: repeat(3, clamp(38px, 8.5vw, 58px));
+    gap: 3px;
+  }
+  .player-overlay.manual-landscape .touch-dpad .touch-key { font-size: 20px; }
+  .player-overlay.manual-landscape .touch-actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: center;
+    align-self: center;
+    gap: 8px;
+  }
+  .player-overlay.manual-landscape .touch-actions .touch-key {
+    width: clamp(52px, 12vw, 76px);
+    height: clamp(52px, 12vw, 76px);
+    font-size: 20px;
+  }
+  .player-overlay.manual-landscape .touch-shoulders {
+    grid-column: 1 / 4;
+    grid-row: 1;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    right: 4px;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .player-overlay.manual-landscape .touch-shoulders .touch-key {
+    width: 44px;
+    height: 25px;
+    min-height: 25px;
+    pointer-events: auto;
+  }
+  .player-overlay.manual-landscape .touch-start-select {
+    grid-column: 2;
+    grid-row: 2;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    justify-self: center;
+    align-self: center;
+    gap: 12px;
+    margin: 0;
+    transform: none;
+  }
+  .player-overlay.manual-landscape .touch-start-select .small-key {
+    min-width: 76px;
+    min-height: 29px;
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+  .player-overlay.manual-landscape .player-hint { display: none; }
+  .player-overlay.manual-landscape .player-error { display: none; }
+  .player-overlay.manual-landscape #emulatorMount,
+  .player-overlay.manual-landscape #emulatorMount canvas {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
 </style>
 </head>
 <body>
