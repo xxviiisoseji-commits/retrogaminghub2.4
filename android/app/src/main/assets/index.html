@@ -939,6 +939,138 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
   }
 }
 
+
+
+/* Final mobile-player layout: preserve emulator sizing/behavior; adjust presentation only. */
+.player-topbar { position: relative; }
+.orientation-icon {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  z-index: 9 !important;
+  width: 38px !important;
+  min-width: 38px !important;
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 7px !important;
+  display: grid !important;
+  place-items: center !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 50% !important;
+}
+.orientation-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+#controlToggleButton { display: none !important; }
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .player-overlay.open { overflow: hidden; }
+  .player-overlay.open .player-topbar {
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: auto;
+    width: 48px; height: 100%;
+    padding: max(8px, var(--safe-top)) 4px max(8px, var(--safe-bottom));
+    box-sizing: border-box;
+    display: flex; flex-direction: column; justify-content: space-evenly; align-items: center;
+  }
+  .player-overlay.open .player-topbar .player-actions {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 7px; max-width: none; overflow: visible;
+  }
+  .player-overlay.open .player-stage {
+    position: absolute; inset: 0 48px 0 0;
+    display: grid; grid-template-columns: minmax(132px, .9fr) minmax(0, 2.5fr) minmax(132px, .9fr);
+    grid-template-rows: minmax(0, 1fr);
+    column-gap: clamp(16px, 2.4vw, 30px); row-gap: 0;
+    padding: max(34px, var(--safe-top)) 12px max(10px, var(--safe-bottom));
+    box-sizing: border-box; align-items: center; justify-items: stretch; overflow: hidden;
+  }
+  .player-overlay.open .player-frame-wrap {
+    grid-column: 2; grid-row: 1;
+    width: min(100%, calc((100dvh - 66px) * 1.5));
+    max-height: calc(100dvh - 66px);
+    height: auto; aspect-ratio: 3 / 2; align-self: center; justify-self: center;
+  }
+  .player-overlay.open .mobile-touch-controls { display: contents; }
+  .player-overlay.open .virtual-stick,
+  .player-overlay.open .touch-dpad { grid-column: 1; grid-row: 1; align-self: center; justify-self: center; }
+  .player-overlay.open .touch-dpad {
+    grid-template-columns: repeat(3, clamp(46px, 11vh, 68px));
+    grid-template-rows: repeat(3, clamp(46px, 11vh, 68px)); gap: 4px;
+  }
+  .player-overlay.open .touch-actions {
+    grid-column: 3; grid-row: 1; align-self: center; justify-self: center;
+    gap: clamp(8px, 2.5vh, 18px); transform: rotate(-10deg);
+  }
+  .player-overlay.open .touch-actions .touch-key {
+    width: clamp(58px, 15vh, 84px); height: clamp(58px, 15vh, 84px);
+  }
+  .player-overlay.open .touch-start-select {
+    grid-column: 3; grid-row: 1; position: relative; align-self: end; justify-self: center;
+    display: flex; flex-direction: row; gap: 10px; margin: 0 0 max(4px, var(--safe-bottom));
+    transform: none; z-index: 4;
+  }
+  .player-overlay.open .touch-start-select .small-key { min-width: 70px; min-height: 29px; padding: 6px 9px; font-size: 9px; }
+  .player-overlay.open .touch-shoulders { grid-column: 1 / 4; grid-row: 1; top: 4px; left: 4px; right: 4px; }
+  .player-overlay.open .player-hint { display: none; }
+}
+
+/* The manually rotated landscape player: reserve the physical notch edge before rotation. */
+@media (max-width: 760px) and (orientation: portrait) {
+  .player-overlay.manual-landscape { position: fixed; inset: 0; width: 100vw; height: 100dvh; overflow: hidden; }
+  .player-overlay.manual-landscape .player-topbar {
+    position: absolute; z-index: 8; top: 0; left: 100vw; right: auto; bottom: auto;
+    width: calc(100dvh - var(--safe-top) - var(--safe-bottom)); height: 44px; min-height: 0;
+    padding: 3px 8px 3px max(42px, var(--safe-top)); box-sizing: border-box;
+    display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between; align-items: center;
+    transform: rotate(90deg); transform-origin: top left;
+  }
+  .player-overlay.manual-landscape .player-topbar .player-actions {
+    display: flex; flex-direction: row; flex-wrap: nowrap; align-items: center; gap: 6px;
+    max-width: none; overflow: visible;
+  }
+  .player-overlay.manual-landscape .player-topbar .player-action:not(.orientation-icon) {
+    width: auto; min-width: 32px; min-height: 32px; height: 32px; padding: 4px 7px;
+    writing-mode: horizontal-tb; transform: none; font-size: 9px;
+  }
+  .player-overlay.manual-landscape .player-stage {
+    position: absolute; left: calc(100vw - 44px); top: 0;
+    width: calc(100dvh - 44px - var(--safe-top) - var(--safe-bottom));
+    height: calc(100vw - var(--safe-left) - var(--safe-right));
+    box-sizing: border-box;
+    padding: 8px 12px 8px max(46px, var(--safe-top));
+    display: grid; grid-template-columns: minmax(136px, .9fr) minmax(0, 2.5fr) minmax(136px, .9fr);
+    grid-template-rows: minmax(0, 1fr); column-gap: clamp(16px, 2.4vw, 30px); row-gap: 0;
+    align-items: center; justify-items: stretch; min-height: 0; overflow: hidden;
+    transform: rotate(90deg); transform-origin: top left;
+  }
+  .player-overlay.manual-landscape .player-frame-wrap {
+    grid-column: 2; grid-row: 1; width: min(100%, calc((100vw - 76px) * 1.5));
+    max-width: 100%; max-height: calc(100vw - 76px); min-width: 0; height: auto;
+    aspect-ratio: 3 / 2; align-self: center; justify-self: center;
+    border: 0; border-radius: 0; outline: 0; box-shadow: none; background: #000; overflow: hidden;
+  }
+  .player-overlay.manual-landscape .mobile-touch-controls { display: contents; }
+  .player-overlay.manual-landscape .virtual-stick,
+  .player-overlay.manual-landscape .touch-dpad { grid-column: 1; grid-row: 1; align-self: center; justify-self: center; }
+  .player-overlay.manual-landscape .touch-dpad {
+    grid-template-columns: repeat(3, clamp(46px, 9.2vw, 66px));
+    grid-template-rows: repeat(3, clamp(46px, 9.2vw, 66px)); gap: 4px;
+  }
+  .player-overlay.manual-landscape .touch-actions {
+    grid-column: 3; grid-row: 1; align-self: center; justify-self: center;
+    display: flex; gap: clamp(8px, 2vw, 16px); transform: rotate(-10deg);
+  }
+  .player-overlay.manual-landscape .touch-actions .touch-key { width: clamp(54px, 11vw, 76px); height: clamp(54px, 11vw, 76px); }
+  .player-overlay.manual-landscape .touch-start-select {
+    grid-column: 3; grid-row: 1; position: relative; align-self: end; justify-self: center;
+    display: flex; flex-direction: row; gap: 10px; margin: 0 0 4px; transform: none; z-index: 4;
+  }
+  .player-overlay.manual-landscape .touch-start-select .small-key { min-width: 70px; min-height: 29px; padding: 6px 9px; font-size: 9px; }
+  .player-overlay.manual-landscape .touch-shoulders { grid-column: 1 / 4; grid-row: 1; position: absolute; top: 4px; left: 4px; right: 4px; display: flex; justify-content: space-between; pointer-events: none; }
+  .player-overlay.manual-landscape .touch-shoulders .touch-key { width: 46px; height: 27px; min-height: 27px; pointer-events: auto; }
+  .player-overlay.manual-landscape .player-hint,
+  .player-overlay.manual-landscape .player-error { display: none; }
+}
+
 </style>
 </head>
 <body>
@@ -1019,11 +1151,12 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
     <div class="player-topbar">
       <div class="player-actions">
         <button class="player-action" id="playerSettingsButton" aria-label="Settings" title="Settings">⚙ Settings</button>
-        <button class="player-action" id="orientationButton" aria-pressed="false" aria-label="Switch to landscape orientation">↻ Landscape</button>
-        <button class="player-action" id="speedButton" aria-pressed="false">×1</button>
-        <button class="player-action" id="controlToggleButton" aria-label="Switch controls">D-pad</button>
+        <button class="player-action" id="speedButton" aria-pressed="false" aria-label="Change game speed">×1</button>
         <button class="player-action" id="muteButton" aria-pressed="false" aria-label="Mute audio">🔊</button>
       </div>
+      <button class="player-action orientation-icon" id="orientationButton" aria-pressed="false" aria-label="Switch to landscape orientation" title="Switch orientation">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="7.5" y="5" width="9" height="14" rx="1.8"/><path d="M10 2.8a9 9 0 0 1 10.1 7.1M20.1 9.9l.2-3.6 2.8 2.2M14 21.2A9 9 0 0 1 3.9 14.1M3.9 14.1l-.2 3.6-2.8-2.2"/></svg>
+      </button>
       <div class="player-actions">
         <button class="player-action" id="pauseButton">Ⅱ Pause</button>
         <button class="player-action close-player" id="closePlayer" aria-label="Close">✕</button>
@@ -1070,10 +1203,11 @@ body{padding-left:var(--safe-left);padding-right:var(--safe-right)}
     <div class="setting-row"><div><strong>Export save (.sav)</strong><p>Download the current battery save.</p></div><button class="player-action" id="exportBatterySave">Export</button></div>
     <div class="setting-row"><div><strong>Save state</strong><p>Save the current game state.</p></div><button class="player-action" id="exportStateButton">Save</button></div>
     <div class="setting-row"><div><strong>Load state</strong><p>Import and load a compatible state file.</p></div><button class="player-action" id="importStateButton">Load</button></div>
+    <div class="setting-row save-folder-row"><div><strong>Save folder</strong><p id="saveFolderStatus">Choose one Android folder for automatic .sav and .state synchronization.</p></div><button class="player-action" id="chooseSaveFolderButton">Choose folder</button></div>
     <div class="setting-row"><div><strong>Touch movement control</strong><p>Choose the directional joystick or a classic four-way D-pad.</p></div><select id="controlModeSelect" aria-label="Touch movement control"><option value="joystick">Joystick</option><option value="dpad">D-pad</option></select></div>
     <div class="setting-row"><div><strong>Local-only library</strong><p>Imported ROMs are stored in this browser's IndexedDB, not uploaded to a server.</p></div><span class="setting-status">ON</span></div>
     <div class="setting-row"><div><strong>Clear local game library</strong><p>Remove all imported games and their local files from this browser.</p></div><button class="danger-button" id="clearLibraryButton">Clear library</button></div>
-    <p class="dialog-footnote">Your ROMs and automatic save backups stay in this browser profile. Export .sav files and .state files to move progress between computers.</p><div class="engine-credit" id="engineVersion">mGBA WebAssembly engine</div><p class="dialog-footnote">Embedded mGBA-wasm 0.3.1 · MPL-2.0. No external scripts or CDNs are used at runtime.</p>
+    <p class="dialog-footnote">Game progress remains backed up in local browser storage. When Android folder access is configured, battery saves synchronize automatically and save states synchronize when created or imported.</p><div class="engine-credit" id="engineVersion">mGBA WebAssembly engine</div><p class="dialog-footnote">Embedded mGBA-wasm 0.3.1 · MPL-2.0. No external scripts or CDNs are used at runtime.</p>
   </dialog>
 
   <script>
@@ -1366,6 +1500,64 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     return enginePromise;
   }
 
+
+  // Optional Android WebView bridge. The native Activity must implement the
+  // documented callbacks for persistent SAF folder access and immersive mode.
+  const androidBridgeRequests = new Map();
+  let androidBridgeRequestId = 0;
+  let androidSaveFolderName = "";
+  let androidSaveFolderReady = false;
+  function androidRequest(method, args = []) {
+    return new Promise((resolve, reject) => {
+      const bridge = window.AndroidBridge;
+      if (!bridge || typeof bridge[method] !== "function") return reject(new Error("This Android build does not yet provide the required native save-folder support."));
+      const requestId = `rgh-${Date.now()}-${++androidBridgeRequestId}`;
+      const timeout = setTimeout(() => { androidBridgeRequests.delete(requestId); reject(new Error("Android did not respond to the request.")); }, 30000);
+      androidBridgeRequests.set(requestId, { resolve: value => { clearTimeout(timeout); resolve(value); }, reject: error => { clearTimeout(timeout); reject(error); } });
+      try {
+        const result = bridge[method](requestId, ...args);
+        if (result === false) { clearTimeout(timeout); androidBridgeRequests.delete(requestId); reject(new Error("Android rejected the request.")); }
+      } catch (error) { clearTimeout(timeout); androidBridgeRequests.delete(requestId); reject(error); }
+    });
+  }
+  window.onAndroidSaveFolderSelected = (requestId, displayName, errorMessage) => {
+    const pending = androidBridgeRequests.get(String(requestId)); if (!pending) return;
+    androidBridgeRequests.delete(String(requestId));
+    if (errorMessage) pending.reject(new Error(String(errorMessage)));
+    else { androidSaveFolderName = String(displayName || "Selected folder"); androidSaveFolderReady = true; pending.resolve(androidSaveFolderName); updateSaveFolderStatus(); }
+  };
+  window.onAndroidSaveFolderInfo = (requestId, displayName, isReady) => {
+    const pending = androidBridgeRequests.get(String(requestId)); if (!pending) return;
+    androidBridgeRequests.delete(String(requestId));
+    androidSaveFolderName = String(displayName || ""); androidSaveFolderReady = Boolean(isReady && displayName); updateSaveFolderStatus(); pending.resolve(androidSaveFolderReady);
+  };
+  window.onAndroidSaveFileWritten = (requestId, success, errorMessage) => {
+    const pending = androidBridgeRequests.get(String(requestId)); if (!pending) return;
+    androidBridgeRequests.delete(String(requestId));
+    if (success) pending.resolve(true); else pending.reject(new Error(String(errorMessage || "Could not write the file to the selected folder.")));
+  };
+  function updateSaveFolderStatus() {
+    const status = document.getElementById("saveFolderStatus");
+    const button = document.getElementById("chooseSaveFolderButton");
+    if (status) status.textContent = androidSaveFolderReady ? `Automatic .sav and .state synchronization is enabled: ${androidSaveFolderName}` : "Choose one Android folder for automatic .sav and .state synchronization.";
+    if (button) button.textContent = androidSaveFolderReady ? "Change folder" : "Choose folder";
+  }
+  async function chooseAndroidSaveFolder() {
+    try {
+      await androidRequest("chooseSaveFolder");
+      notify(`Save folder selected: ${androidSaveFolderName}`);
+    } catch (error) { notify(error.message); }
+  }
+  async function writeBlobToAndroidSaveFolder(blob, filename) {
+    if (!androidSaveFolderReady) return false;
+    const dataUrl = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(String(reader.result).split(",")[1] || ""); reader.onerror = () => reject(new Error("Could not read save data.")); reader.readAsDataURL(blob); });
+    await androidRequest("writeSaveFile", [dataUrl, filename, blob.type || "application/octet-stream"]);
+    return true;
+  }
+  function setAndroidImmersiveMode(enabled) {
+    try { if (window.AndroidBridge && typeof window.AndroidBridge.setImmersiveMode === "function") window.AndroidBridge.setImmersiveMode(Boolean(enabled)); } catch (error) { console.warn("Android immersive mode:", error); }
+  }
+
   function downloadBlob(blob, filename) {
     if (window.AndroidBridge && typeof window.AndroidBridge.saveFile === "function") {
       const reader = new FileReader();
@@ -1384,7 +1576,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
   }
 
   function safeFilename(value) {
-    return String(value || "game").replace(/[\\/:*?"<>|]+/g, "_").replace(/\s+/g, "_").slice(0, 80) || "game";
+    return String(value || "game").replace(/[\\/:*?"<>|]+/g, "_").replace(/\s+/g, " ").trim().slice(0, 80) || "game";
   }
 
   async function saveBatteryToLibrary() {
@@ -1395,6 +1587,10 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     if (!bytes || !bytes.length) return null;
     currentGame.saveBlob = new Blob([bytes], { type: "application/octet-stream" });
     await putGame(currentGame);
+    if (androidSaveFolderReady) {
+      try { await writeBlobToAndroidSaveFolder(currentGame.saveBlob, `SAVE-${safeFilename(currentGame.name)}.sav`); }
+      catch (error) { console.warn("Android battery-save sync:", error); }
+    }
     return currentGame.saveBlob;
   }
 
@@ -1406,6 +1602,10 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     if (!bytes) return null;
     currentGame.stateBlob = new Blob([bytes], { type: "application/octet-stream" });
     await putGame(currentGame);
+    if (androidSaveFolderReady) {
+      try { await writeBlobToAndroidSaveFolder(currentGame.stateBlob, `STATE-${safeFilename(currentGame.name)}.state`); }
+      catch (error) { console.warn("Android save-state sync:", error); }
+    }
     return currentGame.stateBlob;
   }
 
@@ -1415,6 +1615,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
 
     if (activePlay) await closePlayer();
     currentGame = game;
+    setAndroidImmersiveMode(true);
     $("playerOverlay").classList.add("open");
     $("playerOverlay").setAttribute("aria-hidden", "false");
     $("playerLoading").style.display = "flex";
@@ -1464,6 +1665,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
         saveBatteryToLibrary().catch(error => console.warn("Battery autosave:", error));
       }, 15000);
     } catch (error) {
+      setAndroidImmersiveMode(false);
       console.error(error);
       $("playerLoading").style.display = "none";
       $("playerError").textContent = error.message || "The emulator could not start.";
@@ -1484,6 +1686,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
       try { await activePlay.destroy(); } catch (error) { console.warn(error); }
     }
     activePlay = null;
+    setAndroidImmersiveMode(false);
     currentGame = null;
     paused = false;
     speedMultiplier = 1;
@@ -1499,8 +1702,8 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     if (!activePlay || !currentGame) return;
     const blob = await saveBatteryToLibrary();
     if (!blob) return notify("This game has not created battery save data yet.");
-    downloadBlob(blob, `${safeFilename(currentGame.name)}.sav`);
-    notify("Battery save exported.");
+    if (!androidSaveFolderReady) downloadBlob(blob, `SAVE-${safeFilename(currentGame.name)}.sav`);
+    notify(androidSaveFolderReady ? "Battery save synchronized to the selected folder." : "Battery save exported.");
   }
 
   async function importBatterySave(file) {
@@ -1510,6 +1713,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     activePlay.importSram(bytes);
     currentGame.saveBlob = new Blob([bytes], { type: "application/octet-stream" });
     await putGame(currentGame);
+    if (androidSaveFolderReady) await writeBlobToAndroidSaveFolder(currentGame.saveBlob, `SAVE-${safeFilename(currentGame.name)}.sav`);
     notify("Battery save imported.");
   }
 
@@ -1517,8 +1721,8 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     if (!activePlay || !currentGame) return;
     const blob = await saveStateToLibrary();
     if (!blob) return notify("Could not create a save state.");
-    downloadBlob(blob, `${safeFilename(currentGame.name)}.state`);
-    notify("Save state exported.");
+    if (!androidSaveFolderReady) downloadBlob(blob, `STATE-${safeFilename(currentGame.name)}.state`);
+    notify(androidSaveFolderReady ? "Save state synchronized to the selected folder." : "Save state exported.");
   }
 
   async function importState(file) {
@@ -1529,6 +1733,7 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
     if (!activePlay.states.load(0)) throw new Error("This save state is incompatible with the running game or emulator version.");
     currentGame.stateBlob = new Blob([bytes], { type: "application/octet-stream" });
     await putGame(currentGame);
+    if (androidSaveFolderReady) await writeBlobToAndroidSaveFolder(currentGame.stateBlob, `STATE-${safeFilename(currentGame.name)}.state`);
     notify("Save state imported and loaded.");
   }
 
@@ -1637,22 +1842,22 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
       const overlay = $("playerOverlay");
       const landscape = !overlay.classList.contains("manual-landscape");
       overlay.classList.toggle("manual-landscape", landscape);
-      $("orientationButton").textContent = landscape ? "↻ Portrait" : "↻ Landscape";
       $("orientationButton").setAttribute("aria-pressed", landscape ? "true" : "false");
       $("orientationButton").setAttribute(
         "aria-label",
         landscape ? "Switch to portrait orientation" : "Switch to landscape orientation"
       );
     });
-    $("controlToggleButton").addEventListener("click", () => {
-      const select = $("controlModeSelect");
-      select.value = select.value === "joystick" ? "dpad" : "joystick";
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-      $("controlToggleButton").textContent = select.value === "joystick" ? "Joystick" : "D-pad";
-    });
     $("controlModeSelect").addEventListener("change", () => {
-      $("controlToggleButton").textContent = $("controlModeSelect").value === "joystick" ? "Joystick" : "D-pad";
+      // Movement control selection remains available only inside Settings.
     });
+    $("chooseSaveFolderButton").addEventListener("click", chooseAndroidSaveFolder);
+    try {
+      if (window.AndroidBridge && typeof window.AndroidBridge.getSaveFolderInfo === "function") {
+        androidRequest("getSaveFolderInfo").catch(error => console.warn("Android save-folder status:", error));
+      }
+    } catch (error) { console.warn(error); }
+
     $("muteButton").addEventListener("click", () => {
       window.__rghMuted = !window.__rghMuted;
       const targetGain = window.__rghMuted ? 0 : 1;
@@ -1735,8 +1940,6 @@ window.__MGBA_WASM__ = "AGFzbQEAAAAB8AEjYAJ/fwBgAX8AYAN/f38Bf2ADf39/AGAEf39/fwBg
   let savedControlMode = 'joystick';
   try { savedControlMode = localStorage.getItem('rgh-control-mode') || 'joystick'; } catch (_) {}
   applyControlMode(savedControlMode);
-  const controlToggle = document.getElementById('controlToggleButton');
-  if (controlToggle) controlToggle.textContent = savedControlMode === 'joystick' ? 'Joystick' : 'D-pad';
   modeSelect?.addEventListener('change', () => applyControlMode(modeSelect.value));
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault(); installPrompt = event; installButton.hidden = false;
